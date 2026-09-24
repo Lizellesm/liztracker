@@ -5,6 +5,7 @@ import { DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory } 
 import { EXERCISE } from '../constants';
 import { getTheme, setTheme, type Theme } from '../theme';
 import { IconBubble, Segmented } from '../ui';
+import BackupCard from '../components/BackupCard';
 
 export default function SettingsScreen() {
   const settings = useLiveQuery(getSettings) ?? DEFAULT_SETTINGS;
@@ -21,6 +22,8 @@ export default function SettingsScreen() {
   return (
     <div className="screen">
       <h1 className="page-title">Settings</h1>
+
+      <BackupCard />
 
       <section className="card">
         <div className="card-head">

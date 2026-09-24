@@ -1703,3 +1703,56 @@ main {
 .verdict-pill.trigger svg {
   color: var(--bad-fg);
 }
+
+/* Backup */
+.backup-status {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.backup-status span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 700;
+}
+
+.backup-status small {
+  font-weight: 500;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.backup-status.warn {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+
+.backup-status.ok {
+  background: var(--good-bg);
+  color: var(--good-fg);
+}
+
+.btn.icon-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.backup-message {
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.backup-message.good {
+  color: var(--good-fg);
+}
+
+.backup-message.bad {
+  color: var(--bad-fg);
+}

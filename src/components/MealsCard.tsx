@@ -125,9 +125,10 @@ function QuickAdd({ defaultTime, onDone }: { defaultTime: () => number; onDone: 
   const add = async () => {
     const description = text.trim();
     if (!description) return;
-    await db.food.add({ timestamp: defaultTime(), meal, description, tags: [], portion: 'medium', notes: '' });
-    // Stay open so several items can be added in a row.
+    // Clear first so fast typing of the next item isn't merged into this one.
+    // The panel stays open so several items can be added in a row.
     setText('');
+    await db.food.add({ timestamp: defaultTime(), meal, description, tags: [], portion: 'medium', notes: '' });
   };
 
   return (

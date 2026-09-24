@@ -82,6 +82,7 @@ export interface Settings {
   waterGoal: number; // glasses per day
   glassMl: number;
   medications: Medication[];
+  lastBackupAt?: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
