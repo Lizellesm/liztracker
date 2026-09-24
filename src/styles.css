@@ -1438,47 +1438,117 @@ main {
   width: 140px;
 }
 
-/* Feelings */
-.moods {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+/* More about your day */
+.day-more {
+  font-size: 1.1rem;
+  color: var(--text);
+  padding: 8px 6px;
 }
 
-.mood {
+.day-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.day-tile {
+  background: var(--soft-card);
+  border-radius: 24px;
+  padding: 16px 12px 14px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 2px 10px;
-  border-radius: 18px;
-  border: 2px solid transparent;
-  background: var(--soft-card);
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 700;
+  gap: 12px;
+  min-width: 0;
 }
 
-.mood.active {
-  border-color: currentColor;
+.day-tile.wide {
+  grid-column: 1 / -1;
+  padding: 16px 20px 14px;
 }
-.mood.mood-1.active {
-  background: var(--bad-bg);
-  color: var(--bad-fg);
+
+.day-tile h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
 }
-.mood.mood-2.active {
-  background: var(--strength-bg);
-  color: var(--strength-fg);
+
+.faces {
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  justify-items: center;
+  gap: 2px;
 }
-.mood.mood-3.active {
-  background: var(--warn-bg);
-  color: var(--warn-fg);
+
+.day-tile.wide .faces {
+  gap: 8px;
+  padding: 0 8px;
 }
-.mood.mood-4.active {
-  background: var(--good-bg);
-  color: var(--good-fg);
+
+.face {
+  width: 100%;
+  max-width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+  min-width: 0;
 }
-.mood.mood-5.active {
-  background: var(--stretching-bg);
-  color: var(--stretching-fg);
+
+.day-tile.wide .face {
+  max-width: 60px;
+  font-size: 1.9rem;
+}
+
+.face.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  opacity: 1;
+}
+
+.face-label {
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.weight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.weight input {
+  width: 64px;
+  min-width: 0;
+  padding: 6px 2px;
+  border: none;
+  background: transparent;
+  text-align: right;
+  font-size: 1.45rem;
+  font-weight: 700;
+  -moz-appearance: textfield;
+}
+
+.weight input::-webkit-inner-spin-button,
+.weight input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.weight input.unset {
+  color: var(--muted);
+}
+
+.weight-btn {
+  background: none;
+  border: none;
+  padding: 6px 2px;
+  display: grid;
+  place-items: center;
 }

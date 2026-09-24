@@ -50,8 +50,12 @@ export interface DayLog {
   cramps?: number; // episodes that day
   bloating?: number; // level 0–5
   medsTaken?: string[]; // Medication ids ticked off that day
-  mood?: number; // 1 (awful) – 5 (great)
-  feelings?: string[];
+  // "More about your day" scales: index into the option lists in MoreAboutDay.tsx
+  wellbeing?: number;
+  feeling?: number;
+  stress?: number;
+  sleep?: number;
+  weightKg?: number;
 }
 
 export type MedSchedule = 'morning' | 'afternoon' | 'night';

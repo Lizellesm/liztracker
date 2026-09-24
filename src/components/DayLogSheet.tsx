@@ -10,7 +10,7 @@ import ExerciseForm from '../forms/ExerciseForm';
 import FoodForm from '../forms/FoodForm';
 import DayNote from './DayNote';
 import EntrySummary from './EntrySummary';
-import FeelingsCard from './FeelingsCard';
+import MoreAboutDay from './MoreAboutDay';
 import MedicationCard from './MedicationCard';
 import SymptomCards from './SymptomCards';
 import WaterCard from './WaterCard';
@@ -53,7 +53,7 @@ export default function DayLogSheet({ day, onClose }: { day: number; onClose: ()
           ))}
           <SymptomCards day={day} />
           <MedicationCard day={day} />
-          <FeelingsCard day={day} />
+          <MoreAboutDay day={day} />
           <DayNote key={day} day={day} />
         </div>
       </div>
