@@ -3,7 +3,7 @@ import { Utensils } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type FoodEntry, type Meal } from '../db';
 import { MEALS } from '../constants';
-import { AddOption, Field, TimeField, MultiChips, Segmented, Sheet } from '../ui';
+import { AddOption, Field, TimeField, MultiChips, Segmented, FormShell } from '../ui';
 
 function guessMeal(ts: number): Meal {
   const h = new Date(ts).getHours();
@@ -22,7 +22,7 @@ const blank = (at: number): FoodEntry => ({
   notes: '',
 });
 
-export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at?: number; onClose: () => void }) {
+export default function FoodForm({ entry, at, inline, onClose }: { entry?: FoodEntry; at?: number; inline?: boolean; onClose: () => void }) {
   const [e, setE] = useState<FoodEntry>(entry ?? blank(at ?? Date.now()));
   const set = <K extends keyof FoodEntry>(k: K, v: FoodEntry[K]) => setE((prev) => ({ ...prev, [k]: v }));
   const settings = useLiveQuery(getSettings) ?? DEFAULT_SETTINGS;
@@ -42,7 +42,8 @@ export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at
   };
 
   return (
-    <Sheet
+    <FormShell
+      inline={inline}
       title={entry ? 'Edit food' : 'Food & drink'}
       Icon={Utensils}
       tone="food"
@@ -86,6 +87,6 @@ export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at
       <Field label="Notes">
         <textarea rows={2} value={e.notes} onChange={(ev) => set('notes', ev.target.value)} />
       </Field>
-    </Sheet>
+    </FormShell>
   );
 }

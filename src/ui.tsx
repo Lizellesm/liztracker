@@ -187,3 +187,41 @@ export function Sheet({
     </div>
   );
 }
+
+/** Wraps a log form: a bottom sheet on its own, or an inline panel inside the "Today's log" page. */
+export function FormShell({
+  inline,
+  ...props
+}: {
+  inline?: boolean;
+  title: string;
+  Icon: LucideIcon;
+  tone: string;
+  onClose: () => void;
+  onSave: () => void;
+  onDelete?: () => void;
+  canSave?: boolean;
+  children: ReactNode;
+}) {
+  if (!inline) return <Sheet {...props} />;
+  const { title, onClose, onSave, onDelete, canSave = true, children } = props;
+  return (
+    <div className="inline-form">
+      <div className="inline-form-title">{title}</div>
+      {children}
+      <div className="inline-actions">
+        <button type="button" className="btn primary compact" disabled={!canSave} onClick={onSave}>
+          Save
+        </button>
+        <button type="button" className="btn outline compact" onClick={onClose}>
+          Cancel
+        </button>
+        {onDelete && (
+          <button type="button" className="btn danger compact push-right" onClick={() => confirm('Delete this entry?') && onDelete()}>
+            Delete
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}

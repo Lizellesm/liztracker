@@ -49,6 +49,19 @@ export interface DayLog {
   note: string;
   cramps?: number; // episodes that day
   bloating?: number; // level 0–5
+  medsTaken?: string[]; // Medication ids ticked off that day
+  mood?: number; // 1 (awful) – 5 (great)
+  feelings?: string[];
+}
+
+export type MedSchedule = 'morning' | 'afternoon' | 'night';
+
+export interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+  schedule: MedSchedule;
+  time: string; // "HH:MM"
 }
 
 export interface Goal {
@@ -63,6 +76,7 @@ export interface Settings {
   goals: Record<ExerciseCategory, Goal>;
   waterGoal: number; // glasses per day
   glassMl: number;
+  medications: Medication[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -77,6 +91,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   waterGoal: 8,
   glassMl: 250,
+  medications: [],
 };
 
 export const db = new Dexie('liztracker') as Dexie & {

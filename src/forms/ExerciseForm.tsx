@@ -3,7 +3,7 @@ import { Check, Footprints } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory, type ExerciseEntry } from '../db';
 import { EXERCISE } from '../constants';
-import { AddOption, Field, TimeField, IconBubble, MultiChips, Segmented, Sheet } from '../ui';
+import { AddOption, Field, TimeField, IconBubble, MultiChips, Segmented, FormShell } from '../ui';
 
 const blank = (at: number): ExerciseEntry => ({
   timestamp: at,
@@ -15,7 +15,7 @@ const blank = (at: number): ExerciseEntry => ({
   notes: '',
 });
 
-export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseEntry; at?: number; onClose: () => void }) {
+export default function ExerciseForm({ entry, at, inline, onClose }: { entry?: ExerciseEntry; at?: number; inline?: boolean; onClose: () => void }) {
   const [e, setE] = useState<ExerciseEntry>(entry ?? blank(at ?? Date.now()));
   const set = <K extends keyof ExerciseEntry>(k: K, v: ExerciseEntry[K]) => setE((prev) => ({ ...prev, [k]: v }));
   const settings = useLiveQuery(getSettings) ?? DEFAULT_SETTINGS;
@@ -40,7 +40,8 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
   };
 
   return (
-    <Sheet
+    <FormShell
+      inline={inline}
       title={entry ? 'Edit exercise' : 'Exercise'}
       Icon={Footprints}
       tone="exercise"
@@ -128,6 +129,6 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
       <Field label="Notes">
         <textarea rows={2} value={e.notes} onChange={(ev) => set('notes', ev.target.value)} />
       </Field>
-    </Sheet>
+    </FormShell>
   );
 }

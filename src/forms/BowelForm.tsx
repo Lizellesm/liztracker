@@ -5,7 +5,7 @@ import { BRISTOL, STOOL_COLORS, URGENCY, bristolTone } from '../constants';
 import BristolIcon from '../components/BristolIcon';
 import SymptomCards from '../components/SymptomCards';
 import { formatDay, startOfDay } from '../time';
-import { Field, Segmented, Sheet, TimeField, Toggle } from '../ui';
+import { Field, Segmented, FormShell, TimeField, Toggle } from '../ui';
 
 const blank = (at: number): BowelEntry => ({
   timestamp: at,
@@ -21,7 +21,7 @@ const blank = (at: number): BowelEntry => ({
   notes: '',
 });
 
-export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; at?: number; onClose: () => void }) {
+export default function BowelForm({ entry, at, inline, onClose }: { entry?: BowelEntry; at?: number; inline?: boolean; onClose: () => void }) {
   const [e, setE] = useState<BowelEntry>(entry ?? blank(at ?? Date.now()));
   const set = <K extends keyof BowelEntry>(k: K, v: BowelEntry[K]) => setE((prev) => ({ ...prev, [k]: v }));
   const [showMore, setShowMore] = useState(false);
@@ -33,7 +33,8 @@ export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; 
   };
 
   return (
-    <Sheet
+    <FormShell
+      inline={inline}
       title={entry ? 'Edit bowel movement' : 'Bowel movement'}
       Icon={Activity}
       tone="bowel"
@@ -41,7 +42,7 @@ export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; 
       onSave={save}
       onDelete={entry?.id ? async () => (await db.bowel.delete(entry.id!), onClose()) : undefined}
     >
-      <div className="panel">
+      <div className={inline ? 'stack' : 'panel'}>
         <TimeField value={e.timestamp} onChange={(ts) => set('timestamp', ts)} />
 
         <Field label="Bristol type">
@@ -81,7 +82,7 @@ export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; 
       </button>
 
       {showMore && (
-        <div className="panel">
+        <div className={inline ? 'stack' : 'panel'}>
           <Field label="Colour">
             <div className="chips">
               {STOOL_COLORS.map((c) => (
@@ -127,11 +128,15 @@ export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; 
         </div>
       )}
 
-      <h3 className="sheet-section">
-        Symptoms · {formatDay(e.timestamp)}
-        <small>Saved straight away, even without a bowel movement</small>
-      </h3>
-      <SymptomCards day={startOfDay(e.timestamp)} />
-    </Sheet>
+      {!inline && (
+        <>
+          <h3 className="sheet-section">
+            Symptoms · {formatDay(e.timestamp)}
+            <small>Saved straight away, even without a bowel movement</small>
+          </h3>
+          <SymptomCards day={startOfDay(e.timestamp)} />
+        </>
+      )}
+    </FormShell>
   );
 }

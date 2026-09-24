@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Activity, CalendarDays, ChevronLeft, ChevronRight, Footprints, Leaf, Utensils } from 'lucide-react';
+import { Activity, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, Footprints, Leaf, Utensils } from 'lucide-react';
 import { db } from '../db';
 import { addDays, formatDay, formatLongDate, formatShortDate, startOfDay } from '../time';
 import { IconBubble } from '../ui';
 import WaterCard from '../components/WaterCard';
+import DayLogSheet from '../components/DayLogSheet';
 import type { Editing } from '../App';
 
 export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
   const [day, setDay] = useState(() => startOfDay(Date.now()));
   const isToday = day === startOfDay(Date.now());
+  const [logOpen, setLogOpen] = useState(false);
   // New entries on a past day get that day's date with the current time of day.
   const defaultTime = () => (isToday ? Date.now() : day + (Date.now() - startOfDay(Date.now())));
 
@@ -75,7 +77,14 @@ export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
             <span className="tile-label">Bowel</span>
           </button>
         </div>
+
+        <button className="btn primary big-cta" onClick={() => setLogOpen(true)}>
+          <ClipboardList size={22} />
+          {isToday ? "Fill in today's entry" : 'Fill in this day'}
+        </button>
       </div>
+
+      {logOpen && <DayLogSheet day={day} onClose={() => setLogOpen(false)} />}
     </>
   );
 }
