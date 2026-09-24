@@ -33,3 +33,18 @@ export function formatDay(ts: number) {
   if (day === addDays(today, -1)) return 'Yesterday';
   return new Date(ts).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' });
 }
+
+/** Monday 00:00 of the week containing `ts`. */
+export function startOfWeek(ts: number) {
+  const day = startOfDay(ts);
+  const weekday = (new Date(day).getDay() + 6) % 7; // Mon = 0
+  return addDays(day, -weekday);
+}
+
+export function formatLongDate(ts: number) {
+  return new Date(ts).toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+export function formatShortDate(ts: number) {
+  return new Date(ts).toLocaleDateString([], { day: 'numeric', month: 'short' });
+}

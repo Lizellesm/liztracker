@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CalendarDays, ChartColumn, House, Settings, type LucideIcon } from 'lucide-react';
 import type { BowelEntry, ExerciseEntry, FoodEntry } from './db';
 import BowelForm from './forms/BowelForm';
 import FoodForm from './forms/FoodForm';
@@ -13,11 +14,11 @@ export type Editing =
 
 type Tab = 'today' | 'history' | 'stats' | 'settings';
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'today', label: 'Today', icon: '📋' },
-  { id: 'history', label: 'History', icon: '📅' },
-  { id: 'stats', label: 'Stats', icon: '📊' },
-  { id: 'settings', label: 'Settings', icon: '⚙️' },
+const TABS: { id: Tab; label: string; Icon: LucideIcon }[] = [
+  { id: 'today', label: 'Home', Icon: House },
+  { id: 'history', label: 'History', Icon: CalendarDays },
+  { id: 'stats', label: 'Stats', Icon: ChartColumn },
+  { id: 'settings', label: 'Settings', Icon: Settings },
 ];
 
 export default function App() {
@@ -40,7 +41,7 @@ export default function App() {
       <nav className="tabbar">
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
-            <span>{t.icon}</span>
+            <t.Icon size={22} />
             {t.label}
           </button>
         ))}

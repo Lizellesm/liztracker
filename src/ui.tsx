@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { X, type LucideIcon } from 'lucide-react';
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -97,8 +98,19 @@ export function Toggle({ label, checked, onChange }: { label: string; checked: b
   );
 }
 
+/** Pastel circle with a line icon, as used on cards and tiles. */
+export function IconBubble({ Icon, tone, size = 'md' }: { Icon: LucideIcon; tone: string; size?: 'sm' | 'md' | 'lg' }) {
+  return (
+    <span className={`bubble ${tone} ${size}`}>
+      <Icon strokeWidth={2} />
+    </span>
+  );
+}
+
 export function Sheet({
   title,
+  Icon,
+  tone,
   onClose,
   onSave,
   onDelete,
@@ -106,6 +118,8 @@ export function Sheet({
   children,
 }: {
   title: string;
+  Icon: LucideIcon;
+  tone: string;
   onClose: () => void;
   onSave: () => void;
   onDelete?: () => void;
@@ -123,9 +137,10 @@ export function Sheet({
         }}
       >
         <header className="sheet-header">
+          <IconBubble Icon={Icon} tone={tone} />
           <h2>{title}</h2>
           <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
-            ✕
+            <X size={20} />
           </button>
         </header>
         <div className="sheet-body">{children}</div>

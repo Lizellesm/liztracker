@@ -1,3 +1,4 @@
+import { Dumbbell, HeartPulse, PersonStanding, Flower2, type LucideIcon } from 'lucide-react';
 import type { ExerciseCategory, Meal } from './db';
 
 export const BRISTOL = [
@@ -37,9 +38,9 @@ export const MEALS: { id: Meal; label: string }[] = [
   { id: 'drink', label: 'Drink' },
 ];
 
-export const EXERCISE: { id: ExerciseCategory; label: string; icon: string }[] = [
-  { id: 'back', label: 'Back', icon: '🧍' },
-  { id: 'strength', label: 'Strength', icon: '🏋️' },
-  { id: 'cardio', label: 'Cardio', icon: '❤️' },
-  { id: 'stretching', label: 'Stretching', icon: '🧘' },
+export const EXERCISE: { id: ExerciseCategory; label: string; Icon: LucideIcon }[] = [
+  { id: 'back', label: 'Back', Icon: PersonStanding },
+  { id: 'strength', label: 'Strength', Icon: Dumbbell },
+  { id: 'cardio', label: 'Cardio', Icon: HeartPulse },
+  { id: 'stretching', label: 'Stretching', Icon: Flower2 },
 ];

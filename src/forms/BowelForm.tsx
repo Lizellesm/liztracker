@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Activity } from 'lucide-react';
 import { db, type BowelEntry } from '../db';
 import { BRISTOL, STOOL_COLORS, URGENCY, bristolTone } from '../constants';
 import { fromInputValue, toInputValue } from '../time';
@@ -29,7 +30,9 @@ export default function BowelForm({ entry, at, onClose }: { entry?: BowelEntry; 
 
   return (
     <Sheet
-      title={entry ? 'Edit bowel movement' : '💩 Bowel movement'}
+      title={entry ? 'Edit bowel movement' : 'Bowel movement'}
+      Icon={Activity}
+      tone="bowel"
       onClose={onClose}
       onSave={save}
       onDelete={entry?.id ? async () => (await db.bowel.delete(entry.id!), onClose()) : undefined}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Utensils } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type FoodEntry, type Meal } from '../db';
 import { MEALS } from '../constants';
@@ -43,10 +44,12 @@ export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at
 
   return (
     <Sheet
-      title={entry ? 'Edit food' : '🍽 Food & drink'}
+      title={entry ? 'Edit food' : 'Food & drink'}
+      Icon={Utensils}
+      tone="food"
       onClose={onClose}
       onSave={save}
-      canSave={e.description.trim().length > 0 || e.tags.length > 0 || !!e.waterMl}
+      canSave={e.description.trim().length > 0 || e.tags.length > 0}
       onDelete={entry?.id ? async () => (await db.food.delete(entry.id!), onClose()) : undefined}
     >
       <Field label="When">
@@ -85,29 +88,6 @@ export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at
             { value: 'large', label: 'Large' },
           ]}
         />
-      </Field>
-
-      <Field label="Water (ml)">
-        <div className="chips">
-          {[250, 500, 750].map((ml) => (
-            <button
-              key={ml}
-              type="button"
-              className={`chip ${e.waterMl === ml ? 'active' : ''}`}
-              onClick={() => set('waterMl', e.waterMl === ml ? undefined : ml)}
-            >
-              {ml}
-            </button>
-          ))}
-          <input
-            type="number"
-            inputMode="numeric"
-            className="short"
-            placeholder="other"
-            value={e.waterMl ?? ''}
-            onChange={(ev) => set('waterMl', ev.target.value ? Number(ev.target.value) : undefined)}
-          />
-        </div>
       </Field>
 
       <Field label="Notes">

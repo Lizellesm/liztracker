@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Check, Footprints } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory, type ExerciseEntry } from '../db';
 import { EXERCISE } from '../constants';
 import { fromInputValue, toInputValue } from '../time';
-import { AddOption, Field, MultiChips, Segmented, Sheet } from '../ui';
+import { AddOption, Field, IconBubble, MultiChips, Segmented, Sheet } from '../ui';
 
 const blank = (at: number): ExerciseEntry => ({
   timestamp: at,
@@ -41,7 +42,9 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
 
   return (
     <Sheet
-      title={entry ? 'Edit exercise' : '🏃 Exercise'}
+      title={entry ? 'Edit exercise' : 'Exercise'}
+      Icon={Footprints}
+      tone="exercise"
       onClose={onClose}
       onSave={save}
       canSave={e.categories.length > 0}
@@ -66,9 +69,9 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
                 className={`category ${c.id} ${on ? 'active' : ''}`}
                 onClick={() => set('categories', on ? e.categories.filter((x) => x !== c.id) : [...e.categories, c.id])}
               >
-                <span className="category-icon">{c.icon}</span>
+                <IconBubble Icon={c.Icon} tone={c.id} />
                 {c.label}
-                {on && <span className="check">✓</span>}
+                {on && <Check className="check" size={18} strokeWidth={3} />}
               </button>
             );
           })}
@@ -80,8 +83,8 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
           <div className="minutes-list">
             {EXERCISE.filter((c) => e.categories.includes(c.id)).map((c) => (
               <label key={c.id} className="minutes-row">
-                <span>
-                  {c.icon} {c.label}
+                <span className="minutes-label">
+                  <IconBubble Icon={c.Icon} tone={c.id} size="sm" /> {c.label}
                 </span>
                 <input
                   type="number"

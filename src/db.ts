@@ -42,6 +42,13 @@ export interface ExerciseEntry {
   notes: string;
 }
 
+/** Per-day values that aren't separate events. `day` is the local midnight timestamp. */
+export interface DayLog {
+  day: number;
+  waterGlasses: number;
+  note: string;
+}
+
 export interface Goal {
   target: number;
   unit: 'sessions' | 'minutes';
@@ -52,6 +59,8 @@ export interface Settings {
   foodTags: string[];
   backExercises: string[];
   goals: Record<ExerciseCategory, Goal>;
+  waterGoal: number; // glasses per day
+  glassMl: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -64,6 +73,8 @@ export const DEFAULT_SETTINGS: Settings = {
     cardio: { target: 150, unit: 'minutes' },
     stretching: { target: 5, unit: 'sessions' },
   },
+  waterGoal: 8,
+  glassMl: 250,
 };
 
 export const db = new Dexie('liztracker') as Dexie & {
@@ -71,6 +82,7 @@ export const db = new Dexie('liztracker') as Dexie & {
   food: EntityTable<FoodEntry, 'id'>;
   exercise: EntityTable<ExerciseEntry, 'id'>;
   settings: EntityTable<Settings, 'id'>;
+  days: EntityTable<DayLog, 'day'>;
 };
 
 db.version(1).stores({
@@ -79,6 +91,15 @@ db.version(1).stores({
   exercise: '++id, timestamp, *categories',
   settings: 'id',
 });
+
+db.version(2).stores({
+  days: 'day',
+});
+
+export async function updateDay(day: number, changes: Partial<Omit<DayLog, 'day'>>) {
+  const current = (await db.days.get(day)) ?? { day, waterGlasses: 0, note: '' };
+  await db.days.put({ ...current, ...changes });
+}
 
 export async function getSettings(): Promise<Settings> {
   const s = await db.settings.get('settings');
