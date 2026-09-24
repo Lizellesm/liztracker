@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Activity, Check, Footprints, Plus, Utensils, type LucideIcon } from 'lucide-react';
+import { Activity, Check, Footprints, Plus, type LucideIcon } from 'lucide-react';
 import { db } from '../db';
 import { addDays, formatDay, formatTime, startOfDay } from '../time';
 import { IconBubble } from '../ui';
 import type { Editing } from '../App';
 import BowelForm from '../forms/BowelForm';
 import ExerciseForm from '../forms/ExerciseForm';
-import FoodForm from '../forms/FoodForm';
 import DayNote from './DayNote';
 import EntrySummary from './EntrySummary';
 import MoreAboutDay from './MoreAboutDay';
+import MealsCard from './MealsCard';
 import MedicationCard from './MedicationCard';
 import SymptomCards from './SymptomCards';
 import WaterCard from './WaterCard';
@@ -18,7 +18,6 @@ import WaterCard from './WaterCard';
 type Kind = Editing['kind'];
 
 const SECTIONS: { kind: Kind; title: string; add: string; Icon: LucideIcon }[] = [
-  { kind: 'food', title: 'Food', add: 'Add food', Icon: Utensils },
   { kind: 'exercise', title: 'Exercise', add: 'Add exercise', Icon: Footprints },
   { kind: 'bowel', title: 'Bowel movements', add: 'Add movement', Icon: Activity },
 ];
@@ -41,6 +40,7 @@ export default function DayLogSheet({ day, onClose }: { day: number; onClose: ()
         </header>
         <div className="sheet-body">
           <WaterCard day={day} />
+          <MealsCard day={day} editing={editing?.kind === 'food' ? editing : null} onEdit={setEditing} defaultTime={defaultTime} />
           {SECTIONS.map((s) => (
             <EntrySection
               key={s.kind}
@@ -88,9 +88,9 @@ function EntrySection({
   const close = () => onEdit(null);
   const form = (e: Editing) => {
     const props = { inline: true, at: defaultTime(), onClose: close, key: e.entry?.id ?? 'new' };
-    if (e.kind === 'food') return <FoodForm {...props} entry={e.entry} />;
     if (e.kind === 'exercise') return <ExerciseForm {...props} entry={e.entry} />;
-    return <BowelForm {...props} entry={e.entry} />;
+    if (e.kind === 'bowel') return <BowelForm {...props} entry={e.entry} />;
+    return null; // food is handled by MealsCard
   };
 
   return (

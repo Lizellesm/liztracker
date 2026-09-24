@@ -29,6 +29,7 @@ export interface FoodEntry {
   portion: Size;
   waterMl?: number;
   notes: string;
+  verdict?: 'safe' | 'trigger'; // how your gut took it
 }
 
 export interface ExerciseEntry {

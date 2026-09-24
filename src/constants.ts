@@ -1,4 +1,4 @@
-import { Dumbbell, HeartPulse, PersonStanding, Flower2, type LucideIcon } from 'lucide-react';
+import { Coffee, Cookie, CupSoda, Dumbbell, Flower2, HeartPulse, Moon, PersonStanding, Sun, type LucideIcon } from 'lucide-react';
 import type { ExerciseCategory, Meal } from './db';
 
 export const BRISTOL = [
@@ -32,13 +32,22 @@ export const STOOL_COLORS = [
 
 export const URGENCY = ['None', 'Mild', 'Urgent', 'Very urgent'];
 
-export const MEALS: { id: Meal; label: string }[] = [
-  { id: 'breakfast', label: 'Breakfast' },
-  { id: 'lunch', label: 'Lunch' },
-  { id: 'dinner', label: 'Dinner' },
-  { id: 'snack', label: 'Snack' },
-  { id: 'drink', label: 'Drink' },
+// In the order of the day. Quick-add shows the first four, like the original app.
+export const MEALS: { id: Meal; label: string; Icon: LucideIcon }[] = [
+  { id: 'breakfast', label: 'Breakfast', Icon: Coffee },
+  { id: 'lunch', label: 'Lunch', Icon: Sun },
+  { id: 'snack', label: 'Snack', Icon: Cookie },
+  { id: 'dinner', label: 'Dinner', Icon: Moon },
+  { id: 'drink', label: 'Drink', Icon: CupSoda },
 ];
+
+export function guessMeal(ts: number): Meal {
+  const h = new Date(ts).getHours();
+  if (h < 11) return 'breakfast';
+  if (h < 15) return 'lunch';
+  if (h >= 17 && h < 21) return 'dinner';
+  return 'snack';
+}
 
 export const EXERCISE: { id: ExerciseCategory; label: string; Icon: LucideIcon }[] = [
   { id: 'back', label: 'Back', Icon: PersonStanding },

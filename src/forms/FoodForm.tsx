@@ -1,17 +1,9 @@
 import { useState } from 'react';
 import { Utensils } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type FoodEntry, type Meal } from '../db';
-import { MEALS } from '../constants';
+import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type FoodEntry } from '../db';
+import { MEALS, guessMeal } from '../constants';
 import { AddOption, Field, TimeField, MultiChips, Segmented, FormShell } from '../ui';
-
-function guessMeal(ts: number): Meal {
-  const h = new Date(ts).getHours();
-  if (h < 11) return 'breakfast';
-  if (h < 15) return 'lunch';
-  if (h >= 17 && h < 21) return 'dinner';
-  return 'snack';
-}
 
 const blank = (at: number): FoodEntry => ({
   timestamp: at,
