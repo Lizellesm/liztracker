@@ -6,28 +6,28 @@ import { db, updateDay, type DayLog } from '../db';
 type Option = { emoji: string; label: string };
 
 // Listed left to right as in the original app. The stored value is the index.
-const WELLBEING: Option[] = [
+export const WELLBEING: Option[] = [
   { emoji: '🤒', label: 'Unwell' },
   { emoji: '😣', label: 'Poor' },
   { emoji: '😒', label: 'Okay' },
   { emoji: '🙂', label: 'Good' },
   { emoji: '😁', label: 'Great' },
 ];
-const FEELING: Option[] = [
+export const FEELING: Option[] = [
   { emoji: '🥰', label: 'Great' },
   { emoji: '🙂', label: 'Good' },
   { emoji: '😐', label: 'Okay' },
   { emoji: '😢', label: 'Sad' },
   { emoji: '😠', label: 'Angry' },
 ];
-const STRESS: Option[] = [
+export const STRESS: Option[] = [
   { emoji: '😌', label: 'Very low' },
   { emoji: '😊', label: 'Low' },
   { emoji: '😐', label: 'Moderate' },
   { emoji: '😰', label: 'High' },
   { emoji: '🤯', label: 'Very high' },
 ];
-const SLEEP: Option[] = [
+export const SLEEP: Option[] = [
   { emoji: '😵', label: 'Terrible' },
   { emoji: '😪', label: 'Poor' },
   { emoji: '🙂', label: 'Good' },

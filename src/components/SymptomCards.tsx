@@ -3,8 +3,8 @@ import { Minus, Plus, Wind, Zap, type LucideIcon } from 'lucide-react';
 import { db, updateDay } from '../db';
 import { IconBubble } from '../ui';
 
-const CRAMP_LABELS = ['No discomfort', 'Mild', 'Mild', 'Moderate', 'Moderate', 'Severe', 'Severe'];
-const BLOAT_LABELS = ['No bloating', 'Very mild', 'Mild', 'Moderate', 'Strong', 'Severe'];
+export const CRAMP_LABELS = ['No discomfort', 'Mild', 'Mild', 'Moderate', 'Moderate', 'Severe', 'Severe'];
+export const BLOAT_LABELS = ['No bloating', 'Very mild', 'Mild', 'Moderate', 'Strong', 'Severe'];
 
 /** Daily cramps (episodes) and bloating (level) counters for `day`; saved immediately. */
 export default function SymptomCards({ day }: { day: number }) {

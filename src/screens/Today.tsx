@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Activity, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, Footprints, Leaf, Utensils } from 'lucide-react';
+import { Activity, ChevronLeft, ChevronRight, ClipboardList, Footprints, Utensils } from 'lucide-react';
 import { db } from '../db';
 import { addDays, formatDay, formatLongDate, formatShortDate, startOfDay } from '../time';
 import { DoneSheet, IconBubble } from '../ui';
 import WaterCard from '../components/WaterCard';
+import AppHeader from '../components/AppHeader';
 import DayLogSheet from '../components/DayLogSheet';
 import MealsCard from '../components/MealsCard';
 import type { Editing } from '../App';
@@ -34,17 +35,7 @@ export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
 
   return (
     <>
-      <header className="app-header">
-        <IconBubble Icon={Leaf} tone="brand" size="lg" />
-        <div className="brand">
-          <div className="brand-name">LizTracker</div>
-          <div className="muted small">Gut · Food · Exercise</div>
-        </div>
-        <button className="date-pill" onClick={() => setDay(startOfDay(Date.now()))}>
-          <CalendarDays size={18} />
-          {isToday ? 'Today' : formatShortDate(day)}
-        </button>
-      </header>
+      <AppHeader label={isToday ? 'Today' : formatShortDate(day)} onToday={() => setDay(startOfDay(Date.now()))} />
 
       <div className="screen">
         <div className="day-nav">
