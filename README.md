@@ -1,9 +1,9 @@
-# LizTracker
+﻿# LizTracker
 
 Personal gut health, food and exercise tracker. It installs on your phone as a web app (PWA) and works offline.
 
-**Live app:** https://aucorbfnliz.github.io/liztracker/
-On Android: open the link in Chrome, then tap **⋮ → Add to Home screen → Install**.
+**Live app:** https://lizellesm.github.io/liztracker/
+On Android: open the link in Chrome, then tap **â‹® â†’ Add to Home screen â†’ Install**.
 
 All data is stored on the phone (IndexedDB), never in this repo or on a server.
 
