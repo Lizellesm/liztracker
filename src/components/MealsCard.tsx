@@ -14,13 +14,15 @@ export default function MealsCard({
   editing,
   onEdit,
   defaultTime,
+  startAdding = false,
 }: {
   day: number;
+  startAdding?: boolean;
   editing: Editing | null; // a food entry being edited in full, if any
   onEdit: (e: Editing | null) => void;
   defaultTime: () => number;
 }) {
-  const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(startAdding);
   const foods = useLiveQuery(
     () => db.food.where('timestamp').between(day, addDays(day, 1), true, false).sortBy('timestamp'),
     [day],

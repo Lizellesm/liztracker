@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Activity, Check, Footprints, Plus, type LucideIcon } from 'lucide-react';
+import { Activity, Footprints, Plus, type LucideIcon } from 'lucide-react';
 import { db } from '../db';
 import { addDays, formatDay, formatTime, startOfDay } from '../time';
-import { IconBubble } from '../ui';
+import { DoneSheet, IconBubble } from '../ui';
 import type { Editing } from '../App';
 import BowelForm from '../forms/BowelForm';
 import ExerciseForm from '../forms/ExerciseForm';
@@ -30,15 +30,7 @@ export default function DayLogSheet({ day, onClose }: { day: number; onClose: ()
   const defaultTime = () => (isToday ? Date.now() : day + (Date.now() - startOfDay(Date.now())));
 
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet tall" onClick={(e) => e.stopPropagation()}>
-        <header className="sheet-header">
-          <h2>{isToday ? "Today's log" : `Log · ${formatDay(day)}`}</h2>
-          <button type="button" className="btn primary done-btn" onClick={onClose}>
-            <Check size={18} /> Done
-          </button>
-        </header>
-        <div className="sheet-body">
+    <DoneSheet title={isToday ? "Today's log" : `Log · ${formatDay(day)}`} onClose={onClose}>
           <WaterCard day={day} />
           <MealsCard day={day} editing={editing?.kind === 'food' ? editing : null} onEdit={setEditing} defaultTime={defaultTime} />
           {SECTIONS.map((s) => (
@@ -55,9 +47,7 @@ export default function DayLogSheet({ day, onClose }: { day: number; onClose: ()
           <MedicationCard day={day} />
           <MoreAboutDay day={day} />
           <DayNote key={day} day={day} />
-        </div>
-      </div>
-    </div>
+    </DoneSheet>
   );
 }
 

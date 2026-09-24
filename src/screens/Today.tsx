@@ -3,15 +3,18 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Activity, CalendarDays, ChevronLeft, ChevronRight, ClipboardList, Footprints, Leaf, Utensils } from 'lucide-react';
 import { db } from '../db';
 import { addDays, formatDay, formatLongDate, formatShortDate, startOfDay } from '../time';
-import { IconBubble } from '../ui';
+import { DoneSheet, IconBubble } from '../ui';
 import WaterCard from '../components/WaterCard';
 import DayLogSheet from '../components/DayLogSheet';
+import MealsCard from '../components/MealsCard';
 import type { Editing } from '../App';
 
 export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
   const [day, setDay] = useState(() => startOfDay(Date.now()));
   const isToday = day === startOfDay(Date.now());
   const [logOpen, setLogOpen] = useState(false);
+  const [mealsOpen, setMealsOpen] = useState(false);
+  const [editingFood, setEditingFood] = useState<Editing | null>(null);
   // New entries on a past day get that day's date with the current time of day.
   const defaultTime = () => (isToday ? Date.now() : day + (Date.now() - startOfDay(Date.now())));
 
@@ -61,7 +64,7 @@ export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
 
         <h2 className="section-title">Quick log</h2>
         <div className="tiles">
-          <button className="tile" onClick={() => onEdit({ kind: 'food', at: defaultTime() })}>
+          <button className="tile" onClick={() => setMealsOpen(true)}>
             <IconBubble Icon={Utensils} tone="food" />
             <span className="tile-value">{data?.food ?? 0}</span>
             <span className="tile-label">Food</span>
@@ -85,6 +88,11 @@ export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
       </div>
 
       {logOpen && <DayLogSheet day={day} onClose={() => setLogOpen(false)} />}
+      {mealsOpen && (
+        <DoneSheet title={isToday ? "Today's meals" : `Meals · ${formatDay(day)}`} onClose={() => (setMealsOpen(false), setEditingFood(null))}>
+          <MealsCard day={day} editing={editingFood} onEdit={setEditingFood} defaultTime={defaultTime} startAdding />
+        </DoneSheet>
+      )}
     </>
   );
 }

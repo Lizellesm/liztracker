@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Clock, X, type LucideIcon } from 'lucide-react';
+import { Check, Clock, X, type LucideIcon } from 'lucide-react';
 import { formatTime, fromInputValue, toInputValue } from './time';
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -221,6 +221,23 @@ export function FormShell({
             Delete
           </button>
         )}
+      </div>
+    </div>
+  );
+}
+
+/** Tall bottom sheet with a title and a Done button; its contents save as you go. */
+export function DoneSheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet tall" onClick={(e) => e.stopPropagation()}>
+        <header className="sheet-header">
+          <h2>{title}</h2>
+          <button type="button" className="btn primary done-btn" onClick={onClose}>
+            <Check size={18} /> Done
+          </button>
+        </header>
+        <div className="sheet-body">{children}</div>
       </div>
     </div>
   );
