@@ -41,8 +41,9 @@
   color-scheme: light;
 }
 
+/* Dark theme: follows the phone unless a theme is picked in Settings (data-theme on <html>). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #16151a;
     --surface: #211f27;
     --surface-2: #2c2a33;
@@ -81,6 +82,46 @@
     --bad-fg: #f29a8c;
     color-scheme: dark;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #16151a;
+  --surface: #211f27;
+  --surface-2: #2c2a33;
+  --soft-card: #1c1a21;
+  --text: #eeebf3;
+  --muted: #a29dad;
+  --border: #34313c;
+  --primary: #b596dc;
+  --primary-soft: #3a2f4a;
+  --primary-text: #1a1520;
+  --shadow: none;
+
+  --brand-bg: #3a2f4a;
+  --brand-fg: #c9aef0;
+  --water-bg: #1d3340;
+  --water-fg: #8cc6e6;
+  --food-bg: #3d2c1f;
+  --food-fg: #f0b07f;
+  --exercise-bg: #1e3527;
+  --exercise-fg: #86cfa0;
+  --bowel-bg: #332a44;
+  --bowel-fg: #c2a6ec;
+  --back-bg: #252b45;
+  --back-fg: #a3b2f0;
+  --strength-bg: #3d2520;
+  --strength-fg: #f0a08a;
+  --cardio-bg: #3d2230;
+  --cardio-fg: #f08fb0;
+  --stretching-bg: #1c3632;
+  --stretching-fg: #7fd3c5;
+  --good-bg: #1e3527;
+  --good-fg: #86cfa0;
+  --warn-bg: #3a3119;
+  --warn-fg: #ecc56b;
+  --bad-bg: #3d2320;
+  --bad-fg: #f29a8c;
+  color-scheme: dark;
 }
 
 * {
@@ -963,4 +1004,46 @@ main {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Settings */
+.page-title {
+  padding: calc(8px + env(safe-area-inset-top)) 4px 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card > .stepper {
+  justify-content: space-between;
+}
+
+.stepper-value {
+  min-width: 64px;
+  text-align: center;
+}
+
+.stepper-value strong {
+  font-size: 1.2rem;
+}
+
+.round-btn.sm {
+  width: 38px;
+  height: 38px;
 }

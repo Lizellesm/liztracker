@@ -5,6 +5,7 @@ import BowelForm from './forms/BowelForm';
 import FoodForm from './forms/FoodForm';
 import ExerciseForm from './forms/ExerciseForm';
 import Today from './screens/Today';
+import SettingsScreen from './screens/SettingsScreen';
 
 /** Which form is open; `entry` is set when editing an existing one, `at` is the default time for a new one. */
 export type Editing =
@@ -30,9 +31,10 @@ export default function App() {
     <div className="app">
       <main>
         {tab === 'today' && <Today onEdit={setEditing} />}
-        {tab !== 'today' && (
+        {tab === 'settings' && <SettingsScreen />}
+        {(tab === 'history' || tab === 'stats') && (
           <div className="screen">
-            <h1>{TABS.find((t) => t.id === tab)!.label}</h1>
+            <h1 className="page-title">{TABS.find((t) => t.id === tab)!.label}</h1>
             <p className="empty">Coming soon.</p>
           </div>
         )}

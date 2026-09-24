@@ -8,6 +8,13 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
     <title>LizTracker</title>
+    <script>
+      // Apply the saved light/dark choice before the page paints (see src/theme.ts).
+      try {
+        var t = localStorage.getItem('liztracker-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
