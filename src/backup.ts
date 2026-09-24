@@ -16,9 +16,12 @@ export async function createBackup(): Promise<Backup> {
   return { app: 'liztracker', version: 1, exportedAt: new Date().toISOString(), data };
 }
 
-function backupFile(backup: Backup) {
+// Android Chrome only shares allow-listed file types and refuses .json with "Permission denied",
+// so shared backups go out as .txt (same JSON content). Restore accepts either.
+function backupFile(backup: Backup, as: 'json' | 'txt' = 'json') {
   const date = backup.exportedAt.slice(0, 10);
-  return new File([JSON.stringify(backup)], `liztracker-backup-${date}.json`, { type: 'application/json' });
+  const type = as === 'json' ? 'application/json' : 'text/plain';
+  return new File([JSON.stringify(backup)], `liztracker-backup-${date}.${as}`, { type });
 }
 
 /** Downloads the backup file (lands in the phone's Downloads folder). */
@@ -35,23 +38,27 @@ export async function downloadBackup() {
 
 export function canShareFiles() {
   try {
-    return !!navigator.canShare?.({ files: [new File(['{}'], 'test.json', { type: 'application/json' })] });
+    return !!navigator.canShare?.({ files: [new File(['{}'], 'test.txt', { type: 'text/plain' })] });
   } catch {
     return false;
   }
 }
 
-/** Opens the phone's share menu (Google Drive, email, WhatsApp…). Returns false if cancelled. */
-export async function shareBackup() {
-  const file = backupFile(await createBackup());
+/**
+ * Opens the phone's share menu (Google Drive, email, WhatsApp…).
+ * Returns 'shared', 'cancelled', or 'downloaded' when sharing was refused and it saved to Downloads instead.
+ */
+export async function shareBackup(): Promise<'shared' | 'cancelled' | 'downloaded'> {
+  const file = backupFile(await createBackup(), 'txt');
   try {
     await navigator.share({ files: [file], title: 'LizTracker backup' });
   } catch (e) {
-    if ((e as DOMException).name === 'AbortError') return false;
-    throw e;
+    if ((e as DOMException).name === 'AbortError') return 'cancelled';
+    await downloadBackup();
+    return 'downloaded';
   }
   await updateSettings({ lastBackupAt: Date.now() });
-  return true;
+  return 'shared';
 }
 
 /** Parses and checks a backup file; throws a readable error if it isn't one. */

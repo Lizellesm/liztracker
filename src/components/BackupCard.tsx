@@ -67,7 +67,14 @@ export default function BackupCard() {
       </div>
 
       {canShareFiles() && (
-        <button type="button" className="btn primary icon-label" disabled={busy} onClick={() => run(async () => ((await shareBackup()) ? 'Backup shared.' : null))}>
+        <button type="button" className="btn primary icon-label" disabled={busy} onClick={() =>
+            run(async () => {
+              const result = await shareBackup();
+              if (result === 'shared') return 'Backup shared.';
+              if (result === 'downloaded') return "Sharing wasn't allowed, so the backup was saved to your Downloads folder instead.";
+              return null;
+            })
+          }>
           <Share2 size={18} /> Share backup (Drive, email…)
         </button>
       )}
@@ -85,7 +92,7 @@ export default function BackupCard() {
       <input
         ref={fileInput}
         type="file"
-        accept=".json,application/json"
+        accept=".json,.txt,application/json,text/plain"
         hidden
         onChange={(e) => {
           const file = e.target.files?.[0];
