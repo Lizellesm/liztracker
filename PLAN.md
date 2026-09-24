@@ -1,73 +1,38 @@
-# LizTracker – Plan
+# LizTracker – Plan & status
 
-Personal gut health tracker, inspired by "Bowel: Gut health tracker" (Play Store), with food and exercise tracking added.
-It's a PWA installed on an Android phone. It runs offline and keeps all data on the device.
+Personal gut health, food and exercise tracker, modelled on "Bowel: Gut health tracker" (Play Store).
+It's a PWA installed on an Android phone. It runs offline, and all data stays on the phone.
 
-## Tech stack
+**Live:** https://lizellesm.github.io/liztracker/ (pushing to `main` deploys automatically)
 
-- **React + TypeScript + Vite**: the app itself
-- **vite-plugin-pwa**: makes it installable and lets it work offline
-- **Dexie (IndexedDB)**: local database on the phone
-- **Recharts**: stats charts
-- **GitHub Pages**: free hosting, updated automatically on each push
+## Done
 
-## Data model
+- **Home:** Water card, Quick log tiles (Food → meals screen, Exercise, Bowel), and a "Fill in today's entry" button
+- **Today's log page** (one scrolling page with Done): water; Today's meals (quick add by meal, 👍 safe / 👎 trigger, edit, delete, Safe/Triggers totals); exercise; bowel movements; cramps; bloating; daily medication (defined once, ticked per day); "More about your day" (well-being, feeling, stress, sleep, weight); notes
+- **Bowel form:** Bristol tiles like the original app, no blood question, optional "More details"
+- **Exercise:** categories Back (scoliosis) / Strength (bone health) / Cardio / Stretching, combinable, minutes per category, back-exercise checklist
+- **History:** weekly "Habit calendar" with Good/Fair/Bad/No data dots, day summary, and Edit to open that day's log page
+- **Settings:** Backup (share as .txt / save / restore), light/dark/phone theme, water goal, weekly exercise goals
+- Soft & calm design (lavender, pastel icon bubbles, Nunito font, floating tab bar), copied from screenshots of the original app
 
-**BowelEntry**
-- `id`, `timestamp`
-- `bristolType` (1–7), `color`, `amount` (small/medium/large)
-- `urgency` (0–3), `pain` (0–10), `straining`, `incomplete`, `blood`, `mucus` (booleans)
-- `notes`
+## Next: Stats
 
-**FoodEntry**
-- `id`, `timestamp`, `meal` (breakfast/lunch/dinner/snack/drink)
-- `description` (free text), `tags` (e.g. dairy, gluten, spicy, fried, caffeine, alcohol, high-fibre, sugar; you can add your own)
-- `portion` (small/medium/large), `waterMl` (optional), `notes`
+Switchable Week / Month / 3 months:
 
-**ExerciseEntry** (one session; can combine several categories)
-- `id`, `timestamp`
-- `categories`: multi-select from
-  - 🧍 **Back** (scoliosis / physio exercises)
-  - 🏋️ **Strength** (bone density)
-  - ❤️ **Cardio**
-  - 🧘 **Stretching**
-- `minutes` per selected category (optional; e.g. Back 15 + Stretching 10)
-- `activity` (optional free text: walk, gym, Pilates…)
-- `backExercisesDone` (optional checklist from your own list of back exercises)
-- `intensity` (light/moderate/hard), `notes`
+- **Gut:** movements per day, Bristol type distribution, cramps and bloating trend
+- **Food insights ⭐:** top triggers and top safe foods; foods and tags eaten 6–48 h before bloating/cramps days or type 6–7 movements
+- **Exercise:** weekly rings against goals (`src/components/WeekCard.tsx` already exists, currently unused), week-by-week history, back-exercise streak
+- **Water:** average glasses, days the goal was hit
+- **Well-being:** mood, stress and sleep trends, weight line chart (Recharts is installed)
+- **Medication:** adherence per medication
 
-**WeeklyGoals** (set in Settings, editable)
-- sessions or minutes per week for each category, e.g. Back 5×, Strength 2–3×, Cardio 150 min, Stretching 5×
+## Later / ideas
 
-**Settings**
-- custom food tags, custom exercise types, theme (light/dark)
+- Doctor report (CSV or printable PDF for a date range)
+- Reminders aren't possible reliably in a PWA; medication times are display-only
 
-## Screens
+## User preferences
 
-1. **Today**: three big quick-add buttons (💩 Bowel / 🍽 Food / 🏃 Exercise) and a timeline of today's entries
-2. **Log forms**: one per entry type, quick to fill in. Time defaults to now; all fields except the essentials are optional
-3. **History**: a calendar with icons on each day; tap a day to see, edit or delete its entries
-4. **Stats**
-   - bowel movements per day, Bristol type trend, days since the last movement
-   - **Exercise this week:** progress rings for Back / Strength / Cardio / Stretching against weekly goals
-   - week-by-week history per category, and the streak for back exercises
-   - **Food → gut insights:** for each food tag, the average Bristol type and symptoms in the 6–48 h after eating it
-   - **Exercise → gut:** regularity on active days vs rest days
-5. **Settings**: export/import (JSON backup, CSV for the doctor), manage food tags, back exercise list, weekly exercise goals, dark mode
-
-## Build order
-
-1. Project setup, PWA install, deploy to GitHub Pages, install on the phone
-2. Database + Bowel log + Today screen
-3. Food log + Exercise log
-4. History / calendar with edit and delete
-5. Export / import backup
-6. Stats + food/exercise insights
-7. Polish: dark mode, custom tags, icons
-
-Steps 1–2 give a working app on the phone early; each later step adds to it.
-
-## Notes
-
-- All data stays on the phone. **Export a backup regularly**: clearing Chrome's site data would delete it.
-- Reminders are out of scope for now (a PWA limitation). We can add them later if needed.
+- Home stays minimal: only the water card, quick-log tiles and the log button
+- Order everywhere: Water → Food → Exercise → Bowel (bowel isn't the main focus)
+- Matches the original app's look when a screenshot is given
