@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { X, type LucideIcon } from 'lucide-react';
+import { Clock, X, type LucideIcon } from 'lucide-react';
+import { formatTime, fromInputValue, toInputValue } from './time';
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -95,6 +96,30 @@ export function Toggle({ label, checked, onChange }: { label: string; checked: b
       {checked ? '✓ ' : ''}
       {label}
     </button>
+  );
+}
+
+/**
+ * "When" for an entry: uses the given time unless "Enter time manually" is ticked.
+ * Starts ticked when the time isn't roughly now (editing an entry, or logging for a past day).
+ */
+export function TimeField({ value, onChange }: { value: number; onChange: (ts: number) => void }) {
+  const [manual, setManual] = useState(() => Math.abs(Date.now() - value) > 60_000);
+  return (
+    <div className="time-field">
+      <button type="button" className={`radio-row ${manual ? 'on' : ''}`} onClick={() => setManual(!manual)}>
+        <span className="radio" />
+        <Clock size={20} />
+        {manual ? 'Enter time manually' : `Now, ${formatTime(value)} (tap to change)`}
+      </button>
+      {manual && (
+        <input
+          type="datetime-local"
+          value={toInputValue(value)}
+          onChange={(ev) => ev.target.value && onChange(fromInputValue(ev.target.value))}
+        />
+      )}
+    </div>
   );
 }
 

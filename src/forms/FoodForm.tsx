@@ -3,8 +3,7 @@ import { Utensils } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type FoodEntry, type Meal } from '../db';
 import { MEALS } from '../constants';
-import { fromInputValue, toInputValue } from '../time';
-import { AddOption, Field, MultiChips, Segmented, Sheet } from '../ui';
+import { AddOption, Field, TimeField, MultiChips, Segmented, Sheet } from '../ui';
 
 function guessMeal(ts: number): Meal {
   const h = new Date(ts).getHours();
@@ -52,13 +51,7 @@ export default function FoodForm({ entry, at, onClose }: { entry?: FoodEntry; at
       canSave={e.description.trim().length > 0 || e.tags.length > 0}
       onDelete={entry?.id ? async () => (await db.food.delete(entry.id!), onClose()) : undefined}
     >
-      <Field label="When">
-        <input
-          type="datetime-local"
-          value={toInputValue(e.timestamp)}
-          onChange={(ev) => ev.target.value && set('timestamp', fromInputValue(ev.target.value))}
-        />
-      </Field>
+      <TimeField value={e.timestamp} onChange={(ts) => set('timestamp', ts)} />
 
       <Field label="Meal">
         <Segmented value={e.meal} onChange={(v) => set('meal', v)} options={MEALS.map((m) => ({ value: m.id, label: m.label }))} />

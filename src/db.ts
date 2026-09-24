@@ -47,6 +47,8 @@ export interface DayLog {
   day: number;
   waterGlasses: number;
   note: string;
+  cramps?: number; // episodes that day
+  bloating?: number; // level 0–5
 }
 
 export interface Goal {

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Activity, CalendarDays, ChevronLeft, ChevronRight, Footprints, Leaf, Utensils } from 'lucide-react';
 import { db } from '../db';
-import { BRISTOL, EXERCISE, MEALS, STOOL_COLORS, bristolTone } from '../constants';
+import { BRISTOL, EXERCISE, MEALS, bristolTone } from '../constants';
 import { addDays, formatDay, formatLongDate, formatShortDate, formatTime, startOfDay } from '../time';
 import { IconBubble } from '../ui';
 import WaterCard from '../components/WaterCard';
 import WeekCard from '../components/WeekCard';
 import DayNote from '../components/DayNote';
+import SymptomCards from '../components/SymptomCards';
 import type { Editing } from '../App';
 
 export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
@@ -107,6 +108,9 @@ export default function Today({ onEdit }: { onEdit: (e: Editing) => void }) {
           ))}
         </ul>
 
+        <h2 className="section-title">Symptoms</h2>
+        <SymptomCards day={day} />
+
         <DayNote key={day} day={day} />
       </div>
     </>
@@ -118,19 +122,13 @@ function EntrySummary({ item }: { item: Editing }) {
     case 'bowel': {
       const e = item.entry!;
       const b = BRISTOL.find((x) => x.type === e.bristol)!;
-      const color = STOOL_COLORS.find((c) => c.id === e.color);
-      const flags = [e.blood && 'blood', e.mucus && 'mucus', e.straining && 'straining', e.incomplete && 'incomplete'].filter(Boolean);
+      const extras = [e.pain > 0 && `pain ${e.pain}/10`, e.straining && 'straining', e.incomplete && 'incomplete'].filter(Boolean);
       return (
         <div className="summary">
           <div className="summary-title">
-            <span className={`badge tone-${bristolTone(e.bristol)}`}>Type {e.bristol}</span> {b.label}
+            <span className={`badge tone-${bristolTone(e.bristol)}`}>Type {e.bristol}</span> {b.short}
           </div>
-          <div className="summary-meta">
-            {color && <span className="swatch" style={{ background: color.swatch }} />}
-            {color?.label} · {e.amount}
-            {e.pain > 0 && ` · pain ${e.pain}/10`}
-            {flags.length > 0 && <span className="flag"> · {flags.join(', ')}</span>}
-          </div>
+          {extras.length > 0 && <div className="summary-meta">{extras.join(' · ')}</div>}
           {e.notes && <div className="summary-notes">{e.notes}</div>}
         </div>
       );

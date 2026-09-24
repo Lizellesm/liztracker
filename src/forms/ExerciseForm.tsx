@@ -3,8 +3,7 @@ import { Check, Footprints } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory, type ExerciseEntry } from '../db';
 import { EXERCISE } from '../constants';
-import { fromInputValue, toInputValue } from '../time';
-import { AddOption, Field, IconBubble, MultiChips, Segmented, Sheet } from '../ui';
+import { AddOption, Field, TimeField, IconBubble, MultiChips, Segmented, Sheet } from '../ui';
 
 const blank = (at: number): ExerciseEntry => ({
   timestamp: at,
@@ -50,13 +49,7 @@ export default function ExerciseForm({ entry, at, onClose }: { entry?: ExerciseE
       canSave={e.categories.length > 0}
       onDelete={entry?.id ? async () => (await db.exercise.delete(entry.id!), onClose()) : undefined}
     >
-      <Field label="When">
-        <input
-          type="datetime-local"
-          value={toInputValue(e.timestamp)}
-          onChange={(ev) => ev.target.value && set('timestamp', fromInputValue(ev.target.value))}
-        />
-      </Field>
+      <TimeField value={e.timestamp} onChange={(ts) => set('timestamp', ts)} />
 
       <Field label="What did you do? (tick all that apply)">
         <div className="category-grid">

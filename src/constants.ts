@@ -2,18 +2,20 @@ import { Dumbbell, HeartPulse, PersonStanding, Flower2, type LucideIcon } from '
 import type { ExerciseCategory, Meal } from './db';
 
 export const BRISTOL = [
-  { type: 1, label: 'Separate hard lumps', hint: 'Severe constipation' },
-  { type: 2, label: 'Lumpy, sausage-shaped', hint: 'Mild constipation' },
-  { type: 3, label: 'Sausage with cracks', hint: 'Normal' },
-  { type: 4, label: 'Smooth, soft sausage', hint: 'Ideal' },
-  { type: 5, label: 'Soft blobs, clear edges', hint: 'Lacking fibre' },
-  { type: 6, label: 'Mushy, ragged edges', hint: 'Mild diarrhoea' },
-  { type: 7, label: 'Watery, no solid pieces', hint: 'Diarrhoea' },
+  { type: 1, short: 'Hard lumps', label: 'Separate hard lumps', hint: 'Severe constipation' },
+  { type: 2, short: 'Lumpy', label: 'Lumpy, sausage-shaped', hint: 'Mild constipation' },
+  { type: 3, short: 'Cracked', label: 'Sausage with cracks', hint: 'Normal' },
+  { type: 4, short: 'Smooth', label: 'Smooth, soft sausage', hint: 'Ideal' },
+  { type: 5, short: 'Soft blobs', label: 'Soft blobs, clear edges', hint: 'Lacking fibre' },
+  { type: 6, short: 'Mushy', label: 'Mushy, ragged edges', hint: 'Mild diarrhoea' },
+  { type: 7, short: 'Watery', label: 'Watery, no solid pieces', hint: 'Diarrhoea' },
 ];
 
+/** Colour group for a Bristol type: hard (1–2), good (3–4), soft (5–6), watery (7). */
 export function bristolTone(type: number) {
-  if (type <= 2) return 'warn';
-  if (type <= 5) return 'good';
+  if (type <= 2) return 'hard';
+  if (type <= 4) return 'good';
+  if (type <= 6) return 'warn';
   return 'bad';
 }
 
