@@ -1,4 +1,4 @@
-import { Coffee, Cookie, CupSoda, Dumbbell, Flower2, HeartPulse, Moon, PersonStanding, Sun, type LucideIcon } from 'lucide-react';
+import { Coffee, Cookie, CupSoda, Dumbbell, Flower2, HeartPulse, Moon, PersonStanding, Scale, Sun, type LucideIcon } from 'lucide-react';
 import type { ExerciseCategory, Meal } from './db';
 
 export const BRISTOL = [
@@ -49,9 +49,11 @@ export function guessMeal(ts: number): Meal {
   return 'snack';
 }
 
-export const EXERCISE: { id: ExerciseCategory; label: string; Icon: LucideIcon }[] = [
-  { id: 'back', label: 'Back', Icon: PersonStanding },
-  { id: 'strength', label: 'Strength', Icon: Dumbbell },
-  { id: 'cardio', label: 'Cardio', Icon: HeartPulse },
-  { id: 'stretching', label: 'Stretching', Icon: Flower2 },
+// F.A.C.E. order (Vonda Wright), then back & posture work.
+export const EXERCISE: { id: ExerciseCategory; label: string; letter?: string; Icon: LucideIcon }[] = [
+  { id: 'stretching', label: 'Flexibility', letter: 'F', Icon: Flower2 },
+  { id: 'cardio', label: 'Aerobic', letter: 'A', Icon: HeartPulse },
+  { id: 'strength', label: 'Carrying load', letter: 'C', Icon: Dumbbell },
+  { id: 'balance', label: 'Equilibrium', letter: 'E', Icon: Scale },
+  { id: 'back', label: 'Back & posture', Icon: PersonStanding },
 ];

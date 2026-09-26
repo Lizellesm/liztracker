@@ -13,6 +13,7 @@ React 19 + TypeScript + Vite, `vite-plugin-pwa`, Dexie (IndexedDB), lucide-react
 ## Code map
 
 - `src/db.ts`: schema (`bowel`, `food`, `exercise`, `days` keyed by local-midnight `day`, `settings`). **Add a new Dexie version** for index changes; optional fields need no migration.
+- `src/exerciseLibrary.ts`: starting exercise library and routines (F.A.C.E.). Stored in `settings.exerciseLibrary` / `settings.routines`; entries store ticked exercise **names** in `exercisesDone`.
 - `src/backup.ts`: export/restore of all tables. New tables must be added to `TABLES`.
 - `src/history.ts`: loads a range of days and holds the Good/Fair/Bad rating rules.
 - `src/forms/*`: log forms. `FormShell` renders them as a bottom sheet or inline (`inline` prop).

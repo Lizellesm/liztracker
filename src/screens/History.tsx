@@ -6,10 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Droplet,
-  FaceSlightlySmiling,
   Footprints,
   Utensils,
-  Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { DEFAULT_SETTINGS, getSettings } from '../db';
@@ -18,14 +16,13 @@ import { addDays, startOfDay, startOfWeek } from '../time';
 import AppHeader from '../components/AppHeader';
 import DaySummary from '../components/DaySummary';
 import DayLogSheet from '../components/DayLogSheet';
+import ExerciseCalendar from '../components/ExerciseCalendar';
 
 const ROWS: Record<Habit, { label: string; Icon: LucideIcon }> = {
   water: { label: 'Water', Icon: Droplet },
   food: { label: 'Food', Icon: Utensils },
   exercise: { label: 'Exercise', Icon: Footprints },
   bowel: { label: 'Bowel', Icon: Activity },
-  symptoms: { label: 'Cramps & bloating', Icon: Zap },
-  mood: { label: 'Mood', Icon: FaceSlightlySmiling },
 };
 
 const fmt = (ts: number, opts: Intl.DateTimeFormatOptions) => new Date(ts).toLocaleDateString([], opts);
@@ -127,6 +124,8 @@ export default function History() {
             <span><span className="dot none" /> No data</span>
           </div>
         </section>
+
+        <ExerciseCalendar week={week} days={days} today={today} selected={selected} onSelect={setSelected} settings={settings} />
 
         {days && (
           <DaySummary

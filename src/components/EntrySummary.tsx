@@ -1,5 +1,6 @@
 import { BRISTOL, EXERCISE, MEALS, bristolTone } from '../constants';
 import type { Editing } from '../App';
+import { exercisesDone } from '../db';
 
 /** One-line-ish description of a logged entry (used in day lists). */
 export default function EntrySummary({ item }: { item: Editing }) {
@@ -52,7 +53,7 @@ export default function EntrySummary({ item }: { item: Editing }) {
             ))}
           </div>
           <div className="summary-meta">
-            {[e.activity, e.intensity, e.backExercisesDone.length > 0 && e.backExercisesDone.join(', ')].filter(Boolean).join(' · ')}
+            {[e.distanceKm && `${e.distanceKm} km`, e.treadmillProgram && `Treadmill P${e.treadmillProgram}`, e.activity, e.intensity, exercisesDone(e).join(', ')].filter(Boolean).join(' · ')}
           </div>
           {e.notes && <div className="summary-notes">{e.notes}</div>}
         </div>

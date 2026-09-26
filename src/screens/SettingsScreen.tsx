@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Droplets, Footprints, Minus, Palette, Plus } from 'lucide-react';
+import { Droplets, Footprints, Minus, Palette, Plus, Timer } from 'lucide-react';
 import { DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory } from '../db';
 import { EXERCISE } from '../constants';
 import { getTheme, setTheme, type Theme } from '../theme';
-import { IconBubble, Segmented } from '../ui';
+import { IconBubble, Segmented, Toggle } from '../ui';
 import BackupCard from '../components/BackupCard';
+import ExerciseLibraryCard from '../components/ExerciseLibraryCard';
 
 export default function SettingsScreen() {
   const settings = useLiveQuery(getSettings) ?? DEFAULT_SETTINGS;
@@ -75,6 +76,32 @@ export default function SettingsScreen() {
           );
         })}
       </section>
+
+      <section className="card">
+        <div className="card-head">
+          <IconBubble Icon={Timer} tone="exercise" />
+          <span className="card-title">Exercise timer</span>
+        </div>
+        <div className="setting-row">
+          <span className="setting-label">Rest between exercises</span>
+          <Stepper
+            value={settings.timerRestSeconds}
+            unit="sec"
+            step={5}
+            onChange={(v) => updateSettings({ timerRestSeconds: Math.max(0, v) })}
+          />
+        </div>
+        <div className="chips">
+          <Toggle
+            label="Say the next exercise out loud"
+            checked={settings.timerSpeak}
+            onChange={(v) => updateSettings({ timerSpeak: v })}
+          />
+        </div>
+        <p className="muted small">Beeps count down the last 3 seconds and mark each start and rest, so you don't need to watch the phone.</p>
+      </section>
+
+      <ExerciseLibraryCard />
     </div>
   );
 }

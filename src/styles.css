@@ -30,6 +30,8 @@
   --cardio-fg: #c23f6c;
   --stretching-bg: #dcf2ee;
   --stretching-fg: #2c8a7c;
+  --balance-bg: #f6ecd6;
+  --balance-fg: #9a6b12;
   --good-bg: #dcf0e3;
   --good-fg: #2f7a4b;
   --warn-bg: #faf1d6;
@@ -74,6 +76,8 @@
     --cardio-fg: #f08fb0;
     --stretching-bg: #1c3632;
     --stretching-fg: #7fd3c5;
+    --balance-bg: #3a3020;
+    --balance-fg: #e8c27a;
     --good-bg: #1e3527;
     --good-fg: #86cfa0;
     --warn-bg: #3a3119;
@@ -115,6 +119,8 @@
   --cardio-fg: #f08fb0;
   --stretching-bg: #1c3632;
   --stretching-fg: #7fd3c5;
+  --balance-bg: #3a3020;
+  --balance-fg: #e8c27a;
   --good-bg: #1e3527;
   --good-fg: #86cfa0;
   --warn-bg: #3a3119;
@@ -382,6 +388,10 @@ main {
   background: var(--stretching-bg);
   color: var(--stretching-fg);
 }
+.bubble.balance {
+  background: var(--balance-bg);
+  color: var(--balance-fg);
+}
 
 /* Cards */
 .card {
@@ -517,7 +527,7 @@ main {
 /* Weekly rings */
 .rings {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
   text-align: center;
 }
@@ -586,6 +596,11 @@ main {
 .ring.stretching .ring-icon {
   stroke: var(--stretching-fg);
   color: var(--stretching-fg);
+}
+.ring.balance .ring-fill,
+.ring.balance .ring-icon {
+  stroke: var(--balance-fg);
+  color: var(--balance-fg);
 }
 
 /* Timeline */
@@ -697,6 +712,10 @@ main {
 .tag.cat.stretching {
   background: var(--stretching-bg);
   color: var(--stretching-fg);
+}
+.tag.cat.balance {
+  background: var(--balance-bg);
+  color: var(--balance-fg);
 }
 
 .tone-hard {
@@ -1098,6 +1117,346 @@ main {
   border-color: var(--stretching-fg);
   background: var(--stretching-bg);
   color: var(--stretching-fg);
+}
+.category.active.balance {
+  border-color: var(--balance-fg);
+  background: var(--balance-bg);
+  color: var(--balance-fg);
+}
+
+/* Five categories: the last (Back & posture) takes the full row. */
+.category-grid > .category:last-child:nth-child(odd) {
+  grid-column: span 2;
+}
+
+/* Settings: exercise library */
+.lib-group {
+  border-top: 1px solid var(--border);
+  padding: 10px 0;
+}
+.lib-group summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+.lib-group summary::-webkit-details-marker {
+  display: none;
+}
+.lib-group[open] .lib-chevron {
+  transform: rotate(180deg);
+}
+.lib-subhead {
+  margin: 14px 0 -2px 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.lib-routine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 4px 6px 14px;
+  border-radius: 16px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.lib-routine .ex-text {
+  flex: 1;
+  color: var(--text);
+}
+
+/* F.A.C.E. letter in the tile's corner */
+.category .letter {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.category.active .letter {
+  color: inherit;
+}
+
+/* Library exercises to tick off in the exercise form */
+.ex-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ex-row {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 16px;
+  background: var(--soft-card);
+  text-align: left;
+  color: var(--text);
+}
+.inline-form .ex-row {
+  background: var(--surface);
+}
+.ex-row .check-circle {
+  margin-top: 1px;
+}
+.ex-row.done .check-circle {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+.ex-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ex-dose {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.ex-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.ex-tag.plan,
+.ex-tag.equipment {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.ex-tag.book {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.ex-tag.level {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+
+/* A daily routine's exercises for the entry's day, in the order to do them */
+.ex-today {
+  margin-top: 12px;
+  padding: 14px 12px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--back-fg);
+  background: var(--back-bg);
+}
+.ex-today-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 4px;
+  color: var(--back-fg);
+}
+.ex-today .ex-row {
+  background: var(--surface);
+}
+
+/* Treadmill program picker, P1–P24 */
+.program-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.program-grid .chip {
+  justify-content: center;
+  padding: 9px 0;
+}
+.program-last {
+  margin: 0 0 8px;
+}
+
+/* Exercise rows with a timer button */
+.ex-row-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.ex-row-wrap .ex-row {
+  flex: 1;
+  min-width: 0;
+}
+.ex-play {
+  flex-shrink: 0;
+  width: 46px;
+  border: none;
+  border-radius: 16px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+}
+.ex-today-head .timer-start {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+/* Full-screen exercise timer */
+.timer-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+}
+.timer-screen.rest,
+.timer-screen.ready {
+  background: var(--back-bg);
+}
+.timer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.timer-count {
+  font-weight: 700;
+  color: var(--muted);
+}
+.timer-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+.timer-phase {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+.timer-name {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1.2;
+}
+.timer-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--back-fg);
+}
+.timer-ring {
+  position: relative;
+  width: min(72vw, 300px);
+  aspect-ratio: 1;
+  margin: 12px 0;
+}
+.timer-ring svg {
+  width: 100%;
+  height: 100%;
+}
+.timer-ring circle {
+  fill: none;
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+.timer-ring .ring-track {
+  stroke: var(--surface-2);
+}
+.timer-ring .ring-fill {
+  stroke: var(--primary);
+  transition: stroke-dashoffset 0.2s linear;
+}
+.timer-screen.rest .ring-fill,
+.timer-screen.ready .ring-fill {
+  stroke: var(--back-fg);
+}
+.timer-time {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.timer-reps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0;
+}
+.timer-dose {
+  font-size: 1.3rem;
+}
+.timer-big-btn {
+  min-width: 200px;
+  font-size: 1.2rem;
+  padding: 16px 28px;
+}
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+.round-btn.big {
+  width: 76px;
+  height: 76px;
+  background: var(--primary);
+  color: var(--primary-text);
+}
+.round-btn.big:disabled {
+  opacity: 0.4;
+}
+
+/* Collapsible sub-group in the exercise form (e.g. Core and lower back) */
+.ex-group {
+  margin-top: 10px;
+}
+.ex-group summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  cursor: pointer;
+  list-style: none;
+}
+.ex-group summary::-webkit-details-marker {
+  display: none;
+}
+.ex-group[open] .lib-chevron {
+  transform: rotate(180deg);
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 0;
+  background: none;
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .category.active .bubble {
@@ -1872,6 +2231,61 @@ main {
 .legend .dot {
   width: 12px;
   height: 12px;
+}
+
+/* History: exercise calendar (F.A.C.E. rows) */
+.cat-icon {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.cat-icon.stretching {
+  background: var(--stretching-bg);
+  color: var(--stretching-fg);
+}
+.dot.cat.stretching {
+  background: var(--stretching-fg);
+}
+.cat-icon.cardio {
+  background: var(--cardio-bg);
+  color: var(--cardio-fg);
+}
+.dot.cat.cardio {
+  background: var(--cardio-fg);
+}
+.cat-icon.strength {
+  background: var(--strength-bg);
+  color: var(--strength-fg);
+}
+.dot.cat.strength {
+  background: var(--strength-fg);
+}
+.cat-icon.balance {
+  background: var(--balance-bg);
+  color: var(--balance-fg);
+}
+.dot.cat.balance {
+  background: var(--balance-fg);
+}
+.cat-icon.back {
+  background: var(--back-bg);
+  color: var(--back-fg);
+}
+.dot.cat.back {
+  background: var(--back-fg);
+}
+.week-goals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.week-goals .tag {
+  font-weight: 700;
+  opacity: 0.75;
+}
+.week-goals .tag.met {
+  opacity: 1;
+  box-shadow: inset 0 0 0 2px currentColor;
 }
 
 /* History: day summary */

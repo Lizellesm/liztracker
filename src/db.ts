@@ -1,9 +1,11 @@
 import Dexie, { type EntityTable } from 'dexie';
+import { DEFAULT_LIBRARY, DEFAULT_ROUTINES } from './exerciseLibrary';
 
 export type Size = 'small' | 'medium' | 'large';
 export type Intensity = 'light' | 'moderate' | 'hard';
 export type Meal = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'drink';
-export type ExerciseCategory = 'back' | 'strength' | 'cardio' | 'stretching';
+// F.A.C.E. (Vonda Wright): stretching = Flexibility, cardio = Aerobic, strength = Carrying load, balance = Equilibrium.
+export type ExerciseCategory = 'back' | 'strength' | 'cardio' | 'stretching' | 'balance';
 
 export interface BowelEntry {
   id?: number;
@@ -38,7 +40,10 @@ export interface ExerciseEntry {
   categories: ExerciseCategory[];
   minutes: Partial<Record<ExerciseCategory, number>>;
   activity: string;
-  backExercisesDone: string[];
+  exercisesDone?: string[]; // names of library exercises ticked off
+  backExercisesDone?: string[]; // older entries, before the library existed
+  treadmillProgram?: number; // the treadmill's built-in program, P1–P24
+  distanceKm?: number; // aerobic distance
   intensity: Intensity;
   notes: string;
 }
@@ -69,6 +74,31 @@ export interface Medication {
   time: string; // "HH:MM"
 }
 
+/** An exercise in the library, e.g. "Hip circles", 30 sec each direction. */
+export interface LibraryExercise {
+  id: string;
+  category: ExerciseCategory;
+  name: string;
+  dose: string; // time or repetitions
+  source?: 'book' | 'plan'; // amount from the book, or a practical starting amount
+  note?: string;
+  group?: string; // sub-heading within the category, e.g. "Core and lower back"
+  equipment?: string;
+  level?: 'optional' | 'later'; // not set = part of the starting set
+}
+
+/** A named set of library exercises that can be ticked off in one tap. */
+export interface Routine {
+  id: string;
+  category: ExerciseCategory;
+  name: string;
+  exercises: string[]; // LibraryExercise ids
+  // Daily rotation: `exercises` are done every day, topped up to this many with the category's
+  // other exercises, reshuffled each week so every one comes up during the week.
+  dailyTotal?: number;
+  note?: string;
+}
+
 export interface Goal {
   target: number;
   unit: 'sessions' | 'minutes';
@@ -77,11 +107,16 @@ export interface Goal {
 export interface Settings {
   id: 'settings';
   foodTags: string[];
-  backExercises: string[];
+  backExercises: string[]; // replaced by exerciseLibrary; read once to migrate
+  exerciseLibrary: LibraryExercise[];
+  routines: Routine[];
+  seeded?: string[]; // ids of starting exercises/routines already added, so deleted ones stay deleted
   goals: Record<ExerciseCategory, Goal>;
   waterGoal: number; // glasses per day
   glassMl: number;
   medications: Medication[];
+  timerRestSeconds: number; // exercise timer: rest between exercises and sides
+  timerSpeak: boolean; // exercise timer: say the next exercise out loud
   lastBackupAt?: number;
 }
 
@@ -89,16 +124,24 @@ export const DEFAULT_SETTINGS: Settings = {
   id: 'settings',
   foodTags: ['dairy', 'gluten', 'spicy', 'fried', 'caffeine', 'alcohol', 'high-fibre', 'sugar'],
   backExercises: [],
+  exerciseLibrary: DEFAULT_LIBRARY,
+  routines: DEFAULT_ROUTINES,
   goals: {
     back: { target: 5, unit: 'sessions' },
     strength: { target: 3, unit: 'sessions' },
     cardio: { target: 150, unit: 'minutes' },
     stretching: { target: 5, unit: 'sessions' },
+    balance: { target: 3, unit: 'sessions' },
   },
   waterGoal: 8,
   glassMl: 250,
   medications: [],
+  timerRestSeconds: 10,
+  timerSpeak: true,
 };
+
+/** Names of the library exercises ticked in an entry (older entries only had back exercises). */
+export const exercisesDone = (e: ExerciseEntry) => e.exercisesDone ?? e.backExercisesDone ?? [];
 
 export const db = new Dexie('liztracker') as Dexie & {
   bowel: EntityTable<BowelEntry, 'id'>;
@@ -126,7 +169,20 @@ export async function updateDay(day: number, changes: Partial<Omit<DayLog, 'day'
 
 export async function getSettings(): Promise<Settings> {
   const s = await db.settings.get('settings');
-  return { ...DEFAULT_SETTINGS, ...s };
+  const settings = { ...DEFAULT_SETTINGS, ...s, goals: { ...DEFAULT_SETTINGS.goals, ...s?.goals } };
+  if (!s?.exerciseLibrary) {
+    // Before the library, back exercises were a plain list of names.
+    const back = (s?.backExercises ?? []).map((name): LibraryExercise => ({ id: `back-${name}`, category: 'back', name, dose: '' }));
+    settings.exerciseLibrary = [...DEFAULT_LIBRARY, ...back];
+  } else {
+    // Add starting exercises/routines released since the library was saved.
+    const fresh = <T extends { id: string }>(defaults: T[], mine: T[]) =>
+      defaults.filter((d) => !s.seeded?.includes(d.id) && !mine.some((x) => x.id === d.id));
+    settings.exerciseLibrary = [...settings.exerciseLibrary, ...fresh(DEFAULT_LIBRARY, settings.exerciseLibrary)];
+    settings.routines = [...settings.routines, ...fresh(DEFAULT_ROUTINES, settings.routines)];
+  }
+  settings.seeded = [...DEFAULT_LIBRARY, ...DEFAULT_ROUTINES].map((x) => x.id);
+  return settings;
 }
 
 export async function updateSettings(changes: Partial<Omit<Settings, 'id'>>) {

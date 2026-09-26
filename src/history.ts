@@ -33,7 +33,7 @@ export async function loadDays(from: number, count: number): Promise<DayData[]> 
 
 export type Rating = 'good' | 'fair' | 'bad' | null; // null = no data
 
-export const HABITS = ['water', 'food', 'exercise', 'bowel', 'symptoms', 'mood'] as const;
+export const HABITS = ['water', 'food', 'exercise', 'bowel'] as const;
 export type Habit = (typeof HABITS)[number];
 
 export function rate(habit: Habit, d: DayData, settings: Settings): Rating {
@@ -62,21 +62,6 @@ export function rate(habit: Habit, d: DayData, settings: Settings): Rating {
       if (types.some((t) => t === 1 || t === 7)) return 'bad';
       if (types.some((t) => t === 2 || t === 5 || t === 6)) return 'fair';
       return 'good';
-    }
-    case 'symptoms': {
-      const { cramps, bloating } = d.log ?? {};
-      if (cramps === undefined && bloating === undefined) return null;
-      // Cramps: 1–2 mild, 3+ moderate. Bloating: 1–2 mild, 3+ moderate.
-      const worst = Math.max(cramps ?? 0, bloating ?? 0);
-      return worst === 0 ? 'good' : worst <= 2 ? 'fair' : 'bad';
-    }
-    case 'mood': {
-      // Feeling list runs Great → Angry; well-being runs Unwell → Great.
-      const f = d.log?.feeling;
-      if (f !== undefined) return f <= 1 ? 'good' : f === 2 ? 'fair' : 'bad';
-      const w = d.log?.wellbeing;
-      if (w !== undefined) return w >= 3 ? 'good' : w === 2 ? 'fair' : 'bad';
-      return null;
     }
   }
 }

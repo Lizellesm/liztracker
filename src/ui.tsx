@@ -68,7 +68,17 @@ export function MultiChips<T extends string>({
 }
 
 /** Inline "+ add" input that appends a new option (e.g. a custom food tag). */
-export function AddOption({ placeholder, onAdd }: { placeholder: string; onAdd: (v: string) => void }) {
+export function AddOption({
+  placeholder,
+  onAdd,
+  button = 'Add',
+  autoFocus,
+}: {
+  placeholder: string;
+  onAdd: (v: string) => void;
+  button?: string;
+  autoFocus?: boolean;
+}) {
   const [text, setText] = useState('');
   const add = () => {
     const v = text.trim();
@@ -80,11 +90,12 @@ export function AddOption({ placeholder, onAdd }: { placeholder: string; onAdd: 
       <input
         value={text}
         placeholder={placeholder}
+        autoFocus={autoFocus}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
       />
       <button type="button" className="btn small" onClick={add} disabled={!text.trim()}>
-        Add
+        {button}
       </button>
     </div>
   );
