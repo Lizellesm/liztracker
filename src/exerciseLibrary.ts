@@ -1,4 +1,4 @@
-import type { ExerciseCategory, LibraryExercise, Routine } from './db';
+import type { ExerciseCategory, LibraryExercise, PlanItem, Routine } from './db';
 import { startOfWeek } from './time';
 
 // Starting library, from Vonda Wright's F.A.C.E. book. "book" amounts are from the book;
@@ -249,6 +249,22 @@ export const DEFAULT_ROUTINES: Routine[] = [
     note: 'Takes much longer than 15 minutes',
   },
 ];
+
+// Weekly focus, Mon → Sun. Back & posture (the daily Perfect Posture) is every day.
+const backDaily: PlanItem = { category: 'back', note: 'Perfect Posture' };
+const stretchAfter: PlanItem = { category: 'stretching', note: 'Stretch after the main workout' };
+export const DEFAULT_WEEK_PLAN: PlanItem[][] = [
+  [{ category: 'cardio', note: '30 min' }, stretchAfter, backDaily],
+  [{ category: 'strength', groups: ['Glutes, quads and knees', 'Lower legs and ankles'] }, { category: 'balance' }, stretchAfter, backDaily],
+  [{ category: 'cardio', note: '30 min' }, stretchAfter, backDaily],
+  [{ category: 'strength', groups: ['Shoulders and arms'] }, { category: 'balance' }, stretchAfter, backDaily],
+  [{ category: 'cardio', note: '30 min' }, stretchAfter, backDaily],
+  [{ category: 'cardio', note: 'Longer walk, 40–60 min' }, { category: 'strength', groups: ['Core and lower back'] }, { category: 'balance' }, backDaily],
+  [{ category: 'cardio', note: 'Rest day: easy recovery walk (optional)' }, { category: 'stretching', note: 'Gentle' }, backDaily],
+];
+
+/** The plan for a local-midnight `day`. */
+export const planFor = (plan: PlanItem[][], day: number) => plan[(new Date(day).getDay() + 6) % 7] ?? [];
 
 /**
  * The exercises of a routine on a given day, in library order (so a session flows

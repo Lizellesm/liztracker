@@ -8,10 +8,11 @@ import type { Editing } from '../App';
 import BowelForm from '../forms/BowelForm';
 import ExerciseForm from '../forms/ExerciseForm';
 import DayNote from './DayNote';
+import DayPlan from './DayPlan';
 import EntrySummary from './EntrySummary';
 import MoreAboutDay from './MoreAboutDay';
 import MealsCard from './MealsCard';
-import MedicationCard from './MedicationCard';
+import SupplementsCard from './SupplementsCard';
 import SymptomCards from './SymptomCards';
 import WaterCard from './WaterCard';
 
@@ -44,7 +45,7 @@ export default function DayLogSheet({ day, onClose }: { day: number; onClose: ()
             />
           ))}
           <SymptomCards day={day} />
-          <MedicationCard day={day} />
+          <SupplementsCard day={day} />
           <MoreAboutDay day={day} />
           <DayNote key={day} day={day} />
     </DoneSheet>
@@ -77,9 +78,10 @@ function EntrySection({
 
   const close = () => onEdit(null);
   const form = (e: Editing) => {
-    const props = { inline: true, at: defaultTime(), onClose: close, key: e.entry?.id ?? 'new' };
-    if (e.kind === 'exercise') return <ExerciseForm {...props} entry={e.entry} />;
-    if (e.kind === 'bowel') return <BowelForm {...props} entry={e.entry} />;
+    const key = e.entry?.id ?? 'new';
+    const props = { inline: true, at: defaultTime(), onClose: close };
+    if (e.kind === 'exercise') return <ExerciseForm key={key} {...props} entry={e.entry} />;
+    if (e.kind === 'bowel') return <BowelForm key={key} {...props} entry={e.entry} />;
     return null; // food is handled by MealsCard
   };
 
@@ -90,6 +92,8 @@ function EntrySection({
         <span className="card-title">{title}</span>
         {!!items?.length && <span className="muted small right">{items.length}</span>}
       </div>
+
+      {kind === 'exercise' && <DayPlan day={day} />}
 
       {!!items?.length && (
         <ul className="log-list">

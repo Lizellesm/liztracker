@@ -1,6 +1,7 @@
 import { Footprints } from 'lucide-react';
 import type { Settings } from '../db';
 import { EXERCISE } from '../constants';
+import { planFor } from '../exerciseLibrary';
 import type { DayData } from '../history';
 import { addDays } from '../time';
 import { IconBubble } from '../ui';
@@ -60,19 +61,29 @@ export default function ExerciseCalendar({
           ...Array.from({ length: 7 }, (_, i) => {
             const day = addDays(week, i);
             const done = !!days?.[i]?.exercise.some((e) => e.categories.includes(c.id));
+            const planned = planFor(settings.weekPlan, day).some((p) => p.category === c.id);
             return (
               <button
                 key={`${c.id}-${i}`}
                 className={`dot-cell ${day === selected ? 'selected' : ''}`}
                 onClick={() => onSelect(day)}
                 disabled={day > today}
-                aria-label={`${c.label}: ${done ? 'done' : 'not done'}`}
+                aria-label={`${c.label}: ${done ? 'done' : planned ? 'planned' : 'not done'}`}
               >
-                <span className={`dot ${done ? `cat ${c.id}` : 'none'}`} />
+                <span className={`dot ${done ? `cat ${c.id}` : planned ? `planned ${c.id}` : 'none'}`} />
               </button>
             );
           }),
         ])}
+      </div>
+
+      <div className="legend">
+        <span>
+          <span className="dot cat stretching" /> Done
+        </span>
+        <span>
+          <span className="dot planned stretching" /> Planned
+        </span>
       </div>
 
       <div className="week-goals">

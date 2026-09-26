@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { CalendarDays, ChartColumn, House, Settings, type LucideIcon } from 'lucide-react';
 import type { BowelEntry, ExerciseEntry, FoodEntry } from './db';
 import BowelForm from './forms/BowelForm';
@@ -7,6 +7,9 @@ import ExerciseForm from './forms/ExerciseForm';
 import Today from './screens/Today';
 import SettingsScreen from './screens/SettingsScreen';
 import History from './screens/History';
+
+// Stats pulls in the chart library, so it's loaded only when opened.
+const Stats = lazy(() => import('./screens/Stats'));
 
 /** Which form is open; `entry` is set when editing an existing one, `at` is the default time for a new one. */
 export type Editing =
@@ -35,10 +38,9 @@ export default function App() {
         {tab === 'history' && <History />}
         {tab === 'settings' && <SettingsScreen />}
         {tab === 'stats' && (
-          <div className="screen">
-            <h1 className="page-title">{TABS.find((t) => t.id === tab)!.label}</h1>
-            <p className="empty">Coming soon.</p>
-          </div>
+          <Suspense fallback={<div className="screen" />}>
+            <Stats />
+          </Suspense>
         )}
       </main>
 

@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Check, ChevronDown, ListChecks, Play, Timer } from 'lucide-react';
 import { updateSettings, type ExerciseCategory, type LibraryExercise, type Routine, type Settings } from '../db';
-import { routineExercises } from '../exerciseLibrary';
+import { planFor, routineExercises } from '../exerciseLibrary';
 import { startOfDay } from '../time';
 import { hasTimer, timerSteps, unlockSound, type TimerStep } from '../timer';
 import { AddOption, Field } from '../ui';
@@ -26,10 +26,15 @@ export default function ExerciseChecklist({
   onChange: (done: string[]) => void;
 }) {
   const [naming, setNaming] = useState(false);
-  // Sub-groups (e.g. Carry a load's body areas) start closed unless something in them is ticked.
-  const [openGroups, setOpenGroups] = useState(() =>
-    settings.exerciseLibrary.filter((x) => x.category === category && x.group && done.includes(x.name)).map((x) => x.group!),
-  );
+  // Other sub-groups (e.g. Carry a load's body areas) start closed unless something in them is ticked.
+  // Sub-groups in the day's plan (e.g. Tuesday: legs) show a "Planned" tag and start open.
+  const planned = planFor(settings.weekPlan, startOfDay(at))
+    .filter((p) => p.category === category)
+    .flatMap((p) => p.groups ?? []);
+  const [openGroups, setOpenGroups] = useState(() => [
+    ...planned,
+    ...settings.exerciseLibrary.filter((x) => x.category === category && x.group && done.includes(x.name)).map((x) => x.group!),
+  ]);
   const toggleGroup = (g: string) => setOpenGroups((open) => (open.includes(g) ? open.filter((x) => x !== g) : [...open, g]));
   const items = settings.exerciseLibrary.filter((x) => x.category === category);
   const routines = settings.routines.filter((r) => r.category === category);
@@ -134,7 +139,10 @@ export default function ExerciseChecklist({
             return (
               <details key={group} className="ex-group" open={openGroups.includes(group)}>
                 <summary onClick={(ev) => (ev.preventDefault(), toggleGroup(group))}>
-                  <span className="setting-label">{group}</span>
+                  <span className="setting-label">
+                    {group}
+                    {planned.includes(group) && <span className="ex-tag book planned-tag">Planned</span>}
+                  </span>
                   <span className="muted small">{ticked ? `${ticked} ticked` : rows.length}</span>
                   <ChevronDown size={18} className="lib-chevron" />
                 </summary>

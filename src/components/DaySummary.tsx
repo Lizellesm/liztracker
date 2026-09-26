@@ -105,7 +105,7 @@ export default function DaySummary({ data, onEdit }: { data: DayData; onEdit: ()
       )}
 
       {meds.length > 0 && (
-        <Line Icon={Pill} tone="meds" title="Medication">
+        <Line Icon={Pill} tone="meds" title="Supplements">
           {meds.map((m) => m.name).join(', ')} ✓
         </Line>
       )}

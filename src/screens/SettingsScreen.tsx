@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Droplets, Footprints, Minus, Palette, Plus, Timer } from 'lucide-react';
+import { Activity, Droplets, Footprints, Minus, Palette, Plus, Timer } from 'lucide-react';
 import { DEFAULT_SETTINGS, getSettings, updateSettings, type ExerciseCategory } from '../db';
 import { EXERCISE } from '../constants';
 import { getTheme, setTheme, type Theme } from '../theme';
 import { IconBubble, Segmented, Toggle } from '../ui';
 import BackupCard from '../components/BackupCard';
 import ExerciseLibraryCard from '../components/ExerciseLibraryCard';
+import WeekPlanCard from '../components/WeekPlanCard';
 
 export default function SettingsScreen() {
   const settings = useLiveQuery(getSettings) ?? DEFAULT_SETTINGS;
@@ -79,6 +80,22 @@ export default function SettingsScreen() {
 
       <section className="card">
         <div className="card-head">
+          <IconBubble Icon={Activity} tone="bowel" />
+          <span className="card-title">Regularity</span>
+        </div>
+        <div className="setting-row">
+          <span className="setting-label">Nudge me after</span>
+          <Stepper
+            value={settings.gapAlertDays}
+            unit={settings.gapAlertDays === 1 ? 'day' : 'days'}
+            onChange={(v) => updateSettings({ gapAlertDays: Math.max(1, v) })}
+          />
+        </div>
+        <p className="muted small">Stats turns amber the day before and red from this many days without a movement.</p>
+      </section>
+
+      <section className="card">
+        <div className="card-head">
           <IconBubble Icon={Timer} tone="exercise" />
           <span className="card-title">Exercise timer</span>
         </div>
@@ -100,6 +117,8 @@ export default function SettingsScreen() {
         </div>
         <p className="muted small">Beeps count down the last 3 seconds and mark each start and rest, so you don't need to watch the phone.</p>
       </section>
+
+      <WeekPlanCard />
 
       <ExerciseLibraryCard />
     </div>

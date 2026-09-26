@@ -5,7 +5,8 @@ import { db, DEFAULT_SETTINGS, exercisesDone, getSettings, type ExerciseCategory
 import { EXERCISE } from '../constants';
 import { Field, TimeField, IconBubble, Segmented, FormShell } from '../ui';
 import ExerciseChecklist from '../components/ExerciseChecklist';
-import { formatShortDate } from '../time';
+import { formatShortDate, startOfDay } from '../time';
+import DayPlan from '../components/DayPlan';
 
 const blank = (at: number): ExerciseEntry => ({
   timestamp: at,
@@ -66,6 +67,12 @@ export default function ExerciseForm({ entry, at, inline, onClose }: { entry?: E
       onDelete={entry?.id ? async () => (await db.exercise.delete(entry.id!), onClose()) : undefined}
     >
       <TimeField value={e.timestamp} onChange={(ts) => set('timestamp', ts)} />
+
+      <DayPlan
+        day={startOfDay(e.timestamp)}
+        picked={e.categories}
+        onPick={(item) => !e.categories.includes(item.category) && set('categories', [...e.categories, item.category])}
+      />
 
       <Field label="What did you do? (tick all that apply)">
         <div className="category-grid">

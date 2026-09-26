@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie';
-import { DEFAULT_LIBRARY, DEFAULT_ROUTINES } from './exerciseLibrary';
+import { DEFAULT_LIBRARY, DEFAULT_ROUTINES, DEFAULT_WEEK_PLAN } from './exerciseLibrary';
 
 export type Size = 'small' | 'medium' | 'large';
 export type Intensity = 'light' | 'moderate' | 'hard';
@@ -55,7 +55,8 @@ export interface DayLog {
   note: string;
   cramps?: number; // episodes that day
   bloating?: number; // level 0–5
-  medsTaken?: string[]; // Medication ids ticked off that day
+  medsTaken?: string[]; // Medication (supplement) ids ticked off that day
+  medsTakenAt?: Record<string, number>; // when each was ticked, e.g. to see how soon a sachet works
   // "More about your day" scales: index into the option lists in MoreAboutDay.tsx
   wellbeing?: number;
   feeling?: number;
@@ -72,6 +73,15 @@ export interface Medication {
   dosage: string;
   schedule: MedSchedule;
   time: string; // "HH:MM"
+  days?: number[]; // weekdays it's due, Mon = 0 … Sun = 6; not set = every day
+  asNeeded?: boolean; // only sometimes (e.g. creatine, a sachet): never "due"
+  helpsGo?: boolean; // taken for constipation: Stats shows how soon a movement followed
+}
+
+/** Whether a supplement is due on `day` (a local-midnight timestamp). */
+export function isDue(m: Medication, day: number) {
+  if (m.asNeeded) return false;
+  return !m.days || m.days.includes((new Date(day).getDay() + 6) % 7);
 }
 
 /** An exercise in the library, e.g. "Hip circles", 30 sec each direction. */
@@ -99,6 +109,13 @@ export interface Routine {
   note?: string;
 }
 
+/** One focus in the weekly exercise plan, e.g. Carrying load · Glutes, quads and knees. */
+export interface PlanItem {
+  category: ExerciseCategory;
+  groups?: string[]; // library sub-groups to focus on; not set = the whole category
+  note?: string; // e.g. "30 min", "stretch after aerobic"
+}
+
 export interface Goal {
   target: number;
   unit: 'sessions' | 'minutes';
@@ -110,6 +127,7 @@ export interface Settings {
   backExercises: string[]; // replaced by exerciseLibrary; read once to migrate
   exerciseLibrary: LibraryExercise[];
   routines: Routine[];
+  weekPlan: PlanItem[][]; // Mon = 0 … Sun = 6
   seeded?: string[]; // ids of starting exercises/routines already added, so deleted ones stay deleted
   goals: Record<ExerciseCategory, Goal>;
   waterGoal: number; // glasses per day
@@ -117,6 +135,7 @@ export interface Settings {
   medications: Medication[];
   timerRestSeconds: number; // exercise timer: rest between exercises and sides
   timerSpeak: boolean; // exercise timer: say the next exercise out loud
+  gapAlertDays: number; // Stats warns after this many days without a movement
   lastBackupAt?: number;
 }
 
@@ -126,6 +145,7 @@ export const DEFAULT_SETTINGS: Settings = {
   backExercises: [],
   exerciseLibrary: DEFAULT_LIBRARY,
   routines: DEFAULT_ROUTINES,
+  weekPlan: DEFAULT_WEEK_PLAN,
   goals: {
     back: { target: 5, unit: 'sessions' },
     strength: { target: 3, unit: 'sessions' },
@@ -138,6 +158,7 @@ export const DEFAULT_SETTINGS: Settings = {
   medications: [],
   timerRestSeconds: 10,
   timerSpeak: true,
+  gapAlertDays: 3,
 };
 
 /** Names of the library exercises ticked in an entry (older entries only had back exercises). */
